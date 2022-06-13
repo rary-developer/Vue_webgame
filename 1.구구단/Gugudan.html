@@ -1,0 +1,52 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>구구단</title>
+    <!-- vue사용을 위한 cdn가져오기 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <div>{{first}}곱하기 {{second}} 는?</div>
+        <form v-on:submit="onSubmitForm">
+            <input type="number" ref="answer" v-model="value"> <!--ref="이름 붙여주기" -> $refs -->
+            <button type="submit">입력</button>
+        </form>
+        <div id="result">{{result}}</div>
+    </div>
+</body>
+<script>
+    const app = new Vue({
+        el:"#root",
+        data : {
+            first: Math.ceil(Math.random() * 9),
+            second: Math.ceil(Math.random() * 9),
+            value: '',
+            result: ''
+        },
+        methods:{
+            onSubmitForm(e){
+                e.preventDefault(); //새로고침 방지
+                //console.log(this);
+                //console.log(this.first);
+                if(this.first * this.second === parseInt(this.value)){
+                    this.result = '정답';
+                    //맞추면 데이터만 수정
+                    this.first = Math.ceil(Math.random() * 9);
+                    this.second = Math.ceil(Math.random() * 9);
+                    this.value = '';
+                    this.$refs.answer.focus();
+                }else{
+                    this.result = '땡';
+                    //틀리면 다시 입력하게
+                    this.value = '';
+                    this.$refs.answer.focus();
+                }
+            },
+        }
+    });
+</script>
+</html>
