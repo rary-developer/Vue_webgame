@@ -19,7 +19,13 @@ module.exports = {
         rules: [{
             test: /\.vue$/, //파일명이 .vue로 끝나는 파일
             loader: 'vue-loader', //vue-loader을 사용하겠다.
-        }, ],
+        }, {
+            test: /\.css$/,
+            use: [
+                'vue-style-loader',
+                'css-loader',
+            ]
+        },],
     },
     plugins: [
         new VueLoaderPlugin(),
