@@ -7,7 +7,7 @@
     </form>
     <div>시도: {{tries.length}}</div>
     <ul>
-      <li v-for="t in tries" :key="t.try">
+      <li v-for="t in tries" :key="t.try"> <!--v-for사용시 반드시 key를 넣어주자-->
         <div>{{t.try}}</div>
         <div>{{t.result}}</div>
       </li>
