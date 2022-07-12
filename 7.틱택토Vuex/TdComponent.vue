@@ -10,7 +10,8 @@ export default {
     rowIndex: Number,
     cellIndex: Number,
   },
-  computed: {
+  computed: { //vuex store에 data를 사용하려면 computed에 연결
+    //computed와 store의 state를 연결
     ...mapState({
       tableData: state => state.tableData,
       turn: state => state.turn,

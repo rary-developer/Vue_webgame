@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>{{turn}}님의 턴입니다.</div>
-    <table-component>
+    <table-component> <!-- 다른 컴포넌트에 태그를 보내는 곳(slot) -->
       <tr v-for="(rowData, rowIndex) in tableData" :key="rowIndex">
         <td @click="onClickTd(rowIndex, cellIndex)" v-for="(cellData, cellIndex) in rowData" :key="cellIndex">{{cellData}}</td>
       </tr>
@@ -13,6 +13,10 @@
 <script>
 // [0, 1, 2, 3, 4 ,12, 7, 8, 9, 10, 13, 156]
 //  0  1  2  3  4  5    6  7  8  9  10, 11,  12
+// 배열이 값이 수정되거나 값이 계속 늘어날 경우 :key로 index를 사용하는 것이 좋다
+// 랜더링을 할때 화면을 다시 그려야 할지 말지를 결정하는 것이 key(즉, 인덱스가 추가되면 그 인덱스에 대해서만 화면에 새로 그려짐)
+// 근데, 중간값이 삭제가 되면 뒤의 값들에 인덱스가 삭제되기 때문에 삭제 된 후부터 다시 그려버린다(이럴때는 단점이 될 것이다)
+
 import { mapState } from 'vuex';
 import store, { CHANGE_TURN, CLICK_CELL, NO_WINNER, RESET_GAME, SET_WINNER } from './store';
 import TableComponent from './TableComponent';
@@ -37,7 +41,8 @@ export default {
   },
   methods: {
     onClickTd(rowIndex, cellIndex) {
-      if (this.cellData) return;
+      console.log(this.cellData);
+      if (this.tableData[rowIndex][cellIndex]) return;
       this.$store.commit(CLICK_CELL, { row: rowIndex, cell: cellIndex });
       let win = false;
       if (this.tableData[rowIndex][0] === this.turn && this.tableData[rowIndex][1] === this.turn && this.tableData[rowIndex][2] === this.turn) {

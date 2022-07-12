@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import TicTacToe from './TicTacToe';
+import TicTacToe from './MimeSweeper';
 
 new Vue({
     render: createElement => createElement(TicTacToe)
