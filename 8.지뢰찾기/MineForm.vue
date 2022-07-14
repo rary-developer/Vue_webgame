@@ -2,7 +2,7 @@
   <div>
     <input type="number" placeholder="세로" :value="row" @change="onChangeRow" />
     <input type="number" placeholder="가로" :value="cell" @change="onChangeCell" />
-    <input type="number" placeholder="지뢰" :value="mime" @change="onChangeMime" />
+    <input type="number" placeholder="지뢰" :value="mine" @change="onChangeMine" />
     <button @click="onClickBtn">시작</button>
   </div>
 </template>
@@ -15,7 +15,7 @@
       return {
         row: 10,
         cell : 10,
-        mime : 20,
+        mine : 20,
       }
     },
     methods: {
@@ -25,11 +25,11 @@
       onChangeCell(e){
         this.cell = e.target.value;
       },
-      onChangeMime(e){
-        this.mime = e.target.value;
+      onChangeMine(e){
+        this.mine = e.target.value;
       },
       onClickBtn(){
-        this.$store.commit(START_GAME, { row: this.row, cell: this.cell, mime: this.mime});
+        this.$store.commit(START_GAME, { row: this.row, cell: this.cell, mine: this.mine});
       }
     },
   }
