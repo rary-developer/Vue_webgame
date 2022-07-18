@@ -29,7 +29,6 @@ export const CODE = {
 //]
 
 const plantMine = (row,cell,mine) => {
-    console.log(row, cell, mine);
     const candidate = Array(row * cell).fill().map((arr,i)=>{
         return i;
     });
@@ -68,6 +67,7 @@ export default new Vuex.Store({ // import store from './store';
         timer: 0,
         halted: true, // 중단된
         result: '',
+        openedCount : 0,
     },
     getters: {
 
@@ -82,11 +82,13 @@ export default new Vuex.Store({ // import store from './store';
             state.tableData = plantMine(row, cell, mine);
             state.timer = 0;
             state.halted = false; //false가 되었을때 타이머 실행해주기
+            state.openedCount = 0;
             //객체 변경하기
             //state.data['row'] = row;
             //Vue.set(state.data, 'row', row);
         }, //구조분해
         [OPEN_CELL](state, {row, cell}){
+            let openedCount = 0;
             const checked = [];
 
             function checkAound(row, cell){ //주변 8칸 지뢰인지 검색
@@ -105,7 +107,6 @@ export default new Vuex.Store({ // import store from './store';
                     checked.push(row + '/' + cell);
                 }
 
-
                 let around = [];
                 if(state.tableData[row -1]){ //선택 윗줄이 있으면
                     around = around.concat([
@@ -123,14 +124,44 @@ export default new Vuex.Store({ // import store from './store';
                 const counted = around.filter(function(v){
                     return [CODE.MINE, CODE.FLAG_MINE, CODE.QUESTION_MINE].includes(v);
                 });
-                if(counted.length === 0){
-
+                if(counted.length === 0 && row > -1){ //주변칸에 지뢰가 없으면
+                    const near = [];
+                    if(row -1 > -1){
+                        near.push([row-1, cell-1]);
+                        near.push([row-1, cell]);
+                        near.push([row-1, cell+1]);
+                    }
+                    near.push([row, cell-1]);
+                    near.push([row, cell+1]);
+                    if(row +1 < state.tableData.length){
+                        near.push([row+1, cell-1]);
+                        near.push([row+1, cell]);
+                        near.push([row+1, cell+1]);
+                    }
+                    near.forEach((n)=>{
+                        if(state.tableData[n[0]][n[1]] !== CODE.OPENED ){
+                            checkAound(n[0], n[1]);
+                        }
+                    })
                 }
+                if(state.tableData[row][cell] === CODE.NORMAL){
+                    openedCount += 1;
+                }
+                Vue.set(state.tableData[row], cell , counted.length);
                 //return counted.length;
             }
-            checkAound();
-            const count = checkAound();
-            Vue.set(state.tableData[row], cell , count);
+            checkAound(row, cell);
+            //const count = checkAound();
+            //Vue.set(state.tableData[row], cell , count);
+            let halted = false;
+            let result;
+            if (state.data.row * state.data.cell - state.data.mine === state.openedCount + openedCount) {
+                halted = true;
+                result = `${state.timer}초만에 승리하셨습니다.`;
+            }
+            state.openedCount += openedCount;
+            state.halted = halted;
+            state.result = result;
         },
         [CLICK_MINE](state, {row, cell}){
             state.halted = true; //중단
